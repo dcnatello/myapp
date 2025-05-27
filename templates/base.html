@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>СвежВести — {{ current_category.capitalize() }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Логотип" />
+      СвежВести
+    </a>
+    <nav>
+      <ul>
+        {% for cat in [
+          "все новости", "политика", "экономика", "мир", "технологии",
+          "происшествия", "бизнес", "наука", "общество",
+          "спорт", "культура", "здоровье", "авто"
+        ] %}
+        <li>
+          <a href="/{{ '' if cat == 'все новости' else cat }}"
+             class="{% if current_category == cat %}active{% endif %}">
+            {{ cat.capitalize() }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    {% include 'news.html' %}
+  </main>
+
+  <footer>
+    <p>© 2025 СвежВести — курсовая работа</p>
+  </footer>
+
+</body>
+</html>

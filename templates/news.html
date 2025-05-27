@@ -1,0 +1,38 @@
+{% if news %}
+  <div class="news-list">
+    {% for item in news %}
+      <article class="news-item">
+        <div class="news-main">
+          <div class="news-content">
+            <h2><a href="{{ item['link'] }}" target="_blank">{{ item['title'] }}</a></h2>
+            <p>{{ item['description'] }}</p>
+          </div>
+          {% if item['image'] %}
+            <img src="{{ item['image'] }}" alt="Изображение к новости" />
+          {% endif %}
+        </div>
+        <p class="date">{{ item['pubDate'] }}</p>
+      </article>
+    {% endfor %}
+  </div>
+
+  <div class="pagination">
+    {% if page > 1 %}
+      <a href="?page={{ page - 1 }}">&laquo; Назад</a>
+    {% endif %}
+
+    <span>Страница {{ page }} из {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+      <a href="?page={{ page + 1 }}">Вперёд &raquo;</a>
+    {% endif %}
+  </div>
+{% else %}
+  {% if category == 'спорт' %}
+    <p class="no-news-message">В категории «Спорт» пока нет новостей.</p>
+  {% elif category == 'технологии' %}
+    <p class="no-news-message">В категории «Технологии» пока нет новостей.</p>
+  {% else %}
+    <p class="no-news-message">Новостей пока нет.</p>
+  {% endif %}
+{% endif %}
