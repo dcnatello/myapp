@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, abort
 import sqlite3
 from parser import init_db, parse_rss
 from categories import sources
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
 
 app = Flask(__name__)
 DB_PATH = 'news.db'
@@ -45,6 +48,13 @@ def get_news_page(page, category=None, per_page=7):
     total_pages = (total_news + per_page - 1) // per_page
     return news_items, total_pages
 
+
+def update_news():
+    for url, category in sources:
+        parse_rss(url, category)
+    print("Новости обновлены")
+
+
 @app.route('/')
 def index():
     page = request.args.get('page', 1, type=int)
@@ -63,8 +73,11 @@ def category_page(category):
     current_category = category
     return render_template('base.html', news=news, page=page, total_pages=total_pages, current_category=current_category, categories=categories)
 
+
 if __name__ == '__main__':
     init_db()
-    for url, category in sources:
-        parse_rss(url, category)
+    update_news()  # начальное обновление
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(update_news, 'interval', minutes=5)  # обновлять каждый час
+    scheduler.start()
     app.run(debug=True)
